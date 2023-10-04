@@ -1,0 +1,5 @@
+IF(wrongCondition)then{
+    print();
+}ElSe{
+    exit;
+}
