@@ -21,13 +21,14 @@ Java HotSpot(TM) 64-Bit Server VM (build 21+35-LTS-2513, mixed mode, sharing)
 #### IncorrectInput.txt
 - This contains an incorrect Nested If-then-Else statement
 
-#TODO
+# TODO
 - Make if statement syntax checker
 - Make then statement syntax checker 
 - Make else statment syntax checker 
 - figure out how to check every if else 
 - make all syntax checker into functions 
-#COMPLETED
+
+# COMPLETED
 - Successful input of multiple lines of a .txt file 
 
 ## Side notes 
