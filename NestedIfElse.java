@@ -1,5 +1,6 @@
 import java.util.*;
 import java.io.*;
+
 public class NestedIfElse {
     /*
      * This is a program that checks the syntax of the nested if else 
@@ -13,7 +14,7 @@ public class NestedIfElse {
         int ifCount = 0;
         int elseCount = 0;
         try{
-            File file=new File("./InputBasic.txt");    //creates a new file instance  
+            File file=new File("./Input.txt");    //creates a new file instance  
             FileReader fr=new FileReader(file);   //reads the file  
             BufferedReader br=new BufferedReader(fr);  
             System.out.println("Importing code");
@@ -81,7 +82,66 @@ public class NestedIfElse {
         for(Map.Entry<Integer, String> set: token.entrySet()){
             System.out.println(set.getKey() + " || " + set.getValue());
         }
+        String[] temp = get_if_block(token);
+        int start = Integer.parseInt(temp[1]);
+        String if_block = temp[0];
+        String else_block = get_else_block(token, start);
+        System.out.println("If block:\n" + if_block);
+        System.out.println("Else block:\n" + else_block);
+    }
+
+    public static String[] get_if_block(HashMap<Integer, String> token){
+        String block = "";
+        String[] ret = new String[2];
+        int first = 0;
+        int curlyCount = 0;
+        int start = 0;
+        for(Map.Entry<Integer, String> set: token.entrySet()){
+            String inp = set.getValue();
+            if(inp.contains("}")){
+                curlyCount--;
+                System.out.println("minus" + curlyCount);
+                if(curlyCount == 0){
+                    start = set.getKey();
+                    break;
+                }
+            }
+            if(inp.contains("{")){
+                curlyCount++;
+                if(block.length() == 0 || curlyCount > 1){
+                    first++;
+                }
+                System.out.println("add" + curlyCount);
+            }
+            if (curlyCount > 0 && first >= 1) {
+                block += inp + "\n";
+            }
+        }
+        ret[0] = block;
+        ret[1] = start + "";
+        return ret;
+    }
+    
+
+    public static String get_else_block(HashMap<Integer, String> token, int start){
+        String block = "";
+        int curlyCount = 1;
+        for(int i = start + 1; i < token.size(); i++){
+            String inp = token.get(i);
+            if(inp.contains("{")){
+                curlyCount++;
+            }
+            if(inp.contains("}")){
+                curlyCount--;
+                System.out.println("minus" + curlyCount);
+                if(curlyCount == 0){
+                    break;
+                }
+            }
+            if (curlyCount > 0) {
+                block += inp + "\n";
+            }
+        }
+        return block;
     }
 }
-
-
