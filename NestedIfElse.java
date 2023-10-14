@@ -13,7 +13,7 @@ public class NestedIfElse {
         int ifCount = 0;
         int elseCount = 0;
         try{
-            File file=new File("./InputAdvanced.txt");    //creates a new file instance  
+            File file=new File("./InputMedium.txt");    //creates a new file instance  
             FileReader fr=new FileReader(file);   //reads the file  
             BufferedReader br=new BufferedReader(fr);  
             System.out.println("Importing code");

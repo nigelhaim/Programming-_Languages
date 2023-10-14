@@ -5,6 +5,9 @@ if(x+1 == 2){
         System.out.print("True");
     }else{
         System.out.print("False");
+        if(x+3==4){
+            System.out.print("True);
+        }
     }
 }else{
     System.out.print("False");
