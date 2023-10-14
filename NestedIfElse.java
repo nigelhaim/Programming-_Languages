@@ -74,6 +74,10 @@ public class NestedIfElse {
         // }
         
         scanIF(token, false);
+        sample();
+    }
+    static void sample(){
+        System.out.println("This is a sample.");
     }
     static void scanIF(HashMap<Integer, String> token, boolean skipIF){
         HashMap<Integer, String> ifBlock = new HashMap<Integer, String>();
