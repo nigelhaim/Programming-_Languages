@@ -1,10 +1,13 @@
-int x = 1; 
-if(x+1 == 2){
+int x = 1;
+IF(x+1 == 2){
     System.out.print("True");
-    if(x+2 == 3){
+    if(x+2 == 3 && x == 1){
         System.out.print("True");
     }else{
         System.out.print("False");
+        if(x+3==4){
+            System.out.print("True);
+        }
     }
 }else{
     if(x+2 == 3){
@@ -13,4 +16,3 @@ if(x+1 == 2){
         System.out.print("False");
     }
 }
-

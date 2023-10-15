@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> ea7cc8d2106c604e14c8627a619d71d29cf220cf
 int x = 1;
 if(x+1 == 2){
     System.out.print("True");
