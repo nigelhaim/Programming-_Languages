@@ -13,7 +13,7 @@ public class NestedIfElse {
         int ifCount = 0;
         int elseCount = 0;
         try{
-            File file=new File("./InputBasic.txt");    //creates a new file instance  
+            File file=new File("./InputMedium.txt");    //creates a new file instance  
             FileReader fr=new FileReader(file);   //reads the file  
             BufferedReader br=new BufferedReader(fr);  
             System.out.println("Importing code");
@@ -72,34 +72,54 @@ public class NestedIfElse {
         //     System.out.println(lineNumber + " | " + t);
         //     lineNumber++;
         // }
-        
-        ArrayList<Integer> flag_lineNum = scanIF(token, false);
-        String[] error = {"Spelling error for 'if'", "Spelling error for 'else'", 
-        "Condition operator error", "Empty condition", "Incorrect use of logical operator"};
-        if(flag_lineNum.get(0) == 0){
-            int temp = 0;
-            int line = 0;
-            for (int i = 1; i < flag_lineNum.size(); i++) {
-                if(i % 2 == 1){
-                    temp = flag_lineNum.get(i);
-                }
-                else{
-                    line = flag_lineNum.get(i);
-                    System.out.println(error[temp] + " in line " + line);
-                }
+        int[] brackets = correctBrackets(token);
+        if(brackets[0] == 1){
+            ArrayList<Integer> flag_lineNum = scanIF(token, false);
+            String[] error = {"Spelling error for 'if'", "Spelling error for 'else'", 
+            "Condition operator error", "Empty condition", "Incorrect use of logical operator", 
+            "Missing condition", "Missing bracket"};
+            if(flag_lineNum.get(0) == 0){
+                int temp = 0;
+                int line = 0;
+                for (int i = 1; i < flag_lineNum.size(); i++) {
+                    if(i % 2 == 1){
+                        temp = flag_lineNum.get(i);
+                    }
+                    else{
+                        line = flag_lineNum.get(i);
+                        System.out.println(error[temp] + " in line " + line);
+                    }
                 
+                }
+            }
+            else {
+                System.out.println("Syntax is correct.");
+            }
+        }else{
+            if (brackets[1] == 1) {
+                System.out.println("Excess bracket/s.");
+            }else{
+                System.out.println("Missing bracket/s.");
             }
         }
-        else {
-            System.out.println("Syntax is correct.");
-        }
+        
     }
 
     static ArrayList<Integer> syntaxCheck(HashMap<Integer, String> ifBlock){
         ArrayList<Integer> lineNum = new ArrayList<>();
         ArrayList<Integer> flag_lineNum = new ArrayList<>();
-        
         int flag = 1;
+
+        // int[] if_block = get_if_block(ifBlock);
+        // if(if_block[0] == 0){
+        //     flag = if_block[0];
+        //     lineNum.add(6);
+        //     lineNum.add(if_block[1]);
+        //     flag_lineNum.add(0, flag);
+        //     flag_lineNum.addAll(lineNum);
+        //     return flag_lineNum;
+        // }
+
         for(Map.Entry<Integer, String> met: ifBlock.entrySet()){
             String s = met.getValue();
             int line = met.getKey();
@@ -117,7 +137,18 @@ public class NestedIfElse {
                     flag_lineNum.addAll(lineNum);
                     return flag_lineNum;
                 }
-                String condition = s.substring(s.indexOf('('), s.lastIndexOf(')') + 1);
+                String condition = "";
+                try {
+                    condition = s.substring(s.indexOf('('), s.lastIndexOf(')') + 1);
+                } catch (IndexOutOfBoundsException e) {
+                    flag = 0;
+                    lineNum.add(5);
+                    lineNum.add(line);
+                    flag_lineNum.add(0, flag);
+                    flag_lineNum.addAll(lineNum);
+                    return flag_lineNum;
+                }
+                
                 condition = condition.replaceAll(" ", "");
                 if(condition.indexOf(')') - condition.indexOf('(') == 1){
                     flag = 0;
@@ -206,7 +237,6 @@ public class NestedIfElse {
         }
         flag_lineNum.add(0, flag);
         flag_lineNum.addAll(lineNum);
-        // String[] temp = get_if_block(ifBlock);
         // int start = Integer.parseInt(temp[1]);
         // String if_block = temp[0];
         // String else_block = get_else_block(ifBlock, start);
@@ -215,33 +245,40 @@ public class NestedIfElse {
         return flag_lineNum;
     }
 
-    public static String[] get_if_block(HashMap<Integer, String> token){
-        String block = "";
-        String[] ret = new String[2];
-        int first = 0;
+    public static int[] correctBrackets(HashMap<Integer, String> token){
+        int flag = 1;
+        int[] ret = new int[2];
         int curlyCount = 0;
-        int start = 0;
         for(Map.Entry<Integer, String> set: token.entrySet()){
             String inp = set.getValue();
+
             if(inp.contains("}")){
                 curlyCount--;
-                if(curlyCount == 0){
-                    start = set.getKey();
-                    break;
-                }
             }
             if(inp.contains("{")){
                 curlyCount++;
-                if(block.length() == 0 || curlyCount > 1){
-                    first++;
+                int open = inp.indexOf("{");
+                while(true){
+                    inp = inp.substring(open + 1);
+                    if(inp.contains("{")){
+                        curlyCount++;
+                        open = inp.indexOf("{");
+                    }
+                    else
+                        break;
                 }
             }
-            if (curlyCount > 0 && first >= 1) {
-                block += inp + "\n";
-            }
         }
-        ret[0] = block;
-        ret[1] = start + "";
+        
+        if(curlyCount != 0){
+            flag = 0;
+        }
+        ret[0] = flag;
+        if(curlyCount > 0)
+            ret[1] = 1;
+        else
+            ret[1] = 0;
+        
         return ret;
     }
     
