@@ -1,5 +1,5 @@
-if condition{
-    if condition{
+if (x+1 == 2){
+    if (x+1 == 2){
         print("something")
     } 
 }
