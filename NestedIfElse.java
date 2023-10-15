@@ -237,11 +237,6 @@ public class NestedIfElse {
         }
         flag_lineNum.add(0, flag);
         flag_lineNum.addAll(lineNum);
-        // int start = Integer.parseInt(temp[1]);
-        // String if_block = temp[0];
-        // String else_block = get_else_block(ifBlock, start);
-        // System.out.println("If block:\n" + if_block);
-        // System.out.println("Else block:\n" + else_block);
         return flag_lineNum;
     }
 
@@ -254,6 +249,16 @@ public class NestedIfElse {
 
             if(inp.contains("}")){
                 curlyCount--;
+                int close = inp.indexOf("}");
+                while (true) {
+                    inp = inp.substring(close + 1);
+                    if(inp.contains("}")){
+                        curlyCount--;
+                        close = inp.indexOf("}");
+                    }
+                    else
+                        break;
+                }
             }
             if(inp.contains("{")){
                 curlyCount++;
@@ -280,28 +285,6 @@ public class NestedIfElse {
             ret[1] = 0;
         
         return ret;
-    }
-    
-
-    public static String get_else_block(HashMap<Integer, String> token, int start){
-        String block = "";
-        int curlyCount = 1;
-        for(int i = start + 1; i < token.size(); i++){
-            String inp = token.get(i);
-            if(inp.contains("{")){
-                curlyCount++;
-            }
-            if(inp.contains("}")){
-                curlyCount--;
-                if(curlyCount == 0){
-                    break;
-                }
-            }
-            if (curlyCount > 0) {
-                block += inp + "\n";
-            }
-        }
-        return block;
     }
 
     static ArrayList<Integer> scanIF(HashMap<Integer, String> token, boolean skipIF){
