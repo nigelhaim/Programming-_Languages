@@ -1,6 +1,5 @@
 import java.util.*;
 import java.io.*;
-
 public class NestedIfElse {
     /*
      * This is a program that checks the syntax of the nested if else 
@@ -20,25 +19,21 @@ public class NestedIfElse {
             System.out.println("Importing code");
             int curlyCount = 0;
             int pharCount = 0; 
-            int LineCount = 0;
+            int LineCount = 1;
             String inp;
+            //Counts the brackets if successfuly opened and closed 
             while ((inp=br.readLine())!=null) {
-                //System.out.println("Inserting " + inp);
                 if(inp.contains("{")){
-                    //System.out.println("curlyCount++");
                     curlyCount++;
                 }
                 if(inp.contains("}")){
-                    //System.out.println("curlyCount--");
                     curlyCount--;
                 }
 
                 if(inp.contains("(")){
-                    //System.out.println("PharCount++");
                     pharCount++;
                 }
                 if(inp.contains(")")){
-                    //System.out.println("PharCount--");
                     pharCount--;
                 }
                 if(inp.toUpperCase().contains("IF")){
@@ -46,8 +41,6 @@ public class NestedIfElse {
                 }else if(inp.toUpperCase().contains("ELSE")){
                     elseCount++;
                 }
-                //System.out.println("Curly braces count: " + curlyCount + "\nPharanthesis Count: " + pharCount); 
-                //tokens.add(inp);
                 if(!inp.equals("")){
                     token.put(LineCount,inp);
                     LineCount++;
@@ -59,26 +52,30 @@ public class NestedIfElse {
        
         System.out.println("===============");
         System.out.println("\nPrinting tokens");
-        //System.out.println("Token list: " + tokens);
-        //System.out.println("Token list: " + tokens);
         System.out.println();
         System.out.println("===============");
+        System.out.println();
+        for(Map.Entry<Integer, String> get :token.entrySet()){
+            if(get.getKey() > 9){
+                System.out.println(get.getKey() + " | " + get.getValue());
+            }else{
+                System.out.println(get.getKey() + "  | " + get.getValue());
+            }
+        }
+        System.out.println("-------------------------------------------------------");
         System.out.println("Count");
         System.out.println("Number of if statements: " + ifCount);
         System.out.println("Number of else statements: " + elseCount);
         System.out.println("===============");
         System.out.println();
-        //int lineNumber = 0;
-        // for(String t : tokens){
-        //     System.out.println(lineNumber + " | " + t);
-        //     lineNumber++;
-        // }
         int[] brackets = correctBrackets(token);
+        //It is a flag system where it detects errors of the code and prints which error it has detected 
         if(brackets[0] == 1){
             ArrayList<Integer> flag_lineNum = scanIF(token, false);
-            String[] error = {"Spelling error for 'if'", "Spelling error for 'else'", 
+            String[] error = {"Case sensitivity error for 'if'", "Case sensitivity error for 'else'", 
             "Condition operator error", "Empty condition", "Incorrect use of logical operator", 
-            "Missing condition", "Missing bracket"};
+            "Missing condition", "Missing bracket", "Case sensitivity error for 'else if' statement", 
+            "'else if' statement is not connected to an 'if' statement"};
             if(flag_lineNum.get(0) == 0){
                 int temp = 0;
                 int line = 0;
@@ -111,21 +108,41 @@ public class NestedIfElse {
         ArrayList<Integer> flag_lineNum = new ArrayList<>();
         int flag = 1;
 
-        // int[] if_block = get_if_block(ifBlock);
-        // if(if_block[0] == 0){
-        //     flag = if_block[0];
-        //     lineNum.add(6);
-        //     lineNum.add(if_block[1]);
-        //     flag_lineNum.add(0, flag);
-        //     flag_lineNum.addAll(lineNum);
-        //     return flag_lineNum;
-        // }
-
         for(Map.Entry<Integer, String> met: ifBlock.entrySet()){
             String s = met.getValue();
             int line = met.getKey();
             String temp = s.toUpperCase();
+            //Checks for the conditions 
             String[] comparisonOperator = {"<", "<=", "==", "!=", ">", ">="};
+            if(temp.contains("IF") && temp.contains("ELSE")){
+                String else_if = s.substring(s.indexOf("e"),s.indexOf("i"));
+                if(s.contains("if") && s.contains("else") && else_if.contains(" ")){
+                    try {
+                        if(s.contains("}")){
+                            flag = 1;
+                        }
+                        else if (ifBlock.get(line - 1).contains("}")){
+                            flag = 1;
+                        }
+                        else{
+                            flag = 0;
+                            lineNum.add(8);
+                            lineNum.add(line);
+                            flag_lineNum.add(0, flag);
+                            flag_lineNum.addAll(lineNum);
+                            return flag_lineNum;
+                        }
+                    } catch (Exception e) {}
+                }
+                else{
+                    flag = 0;
+                    lineNum.add(7);
+                    lineNum.add(line);
+                    flag_lineNum.add(0, flag);
+                    flag_lineNum.addAll(lineNum);
+                    return flag_lineNum;
+                }
+            }
             if(temp.contains("IF")){
                 if(s.contains("if")){
                     flag = 1;
@@ -242,6 +259,7 @@ public class NestedIfElse {
     }
 
     public static int[] correctBrackets(HashMap<Integer, String> token){
+        //Recounts the brackets 
         int flag = 1;
         int[] ret = new int[2];
         int curlyCount = 0;
@@ -251,7 +269,7 @@ public class NestedIfElse {
             if(inp.contains("}")){
                 curlyCount--;
                 int close = inp.indexOf("}");
-                while (true) {
+                while (true) {                                                                                                                                                                                                                                            
                     inp = inp.substring(close + 1);
                     if(inp.contains("}")){
                         curlyCount--;
@@ -296,7 +314,6 @@ public class NestedIfElse {
         for(Map.Entry<Integer, String> met: token.entrySet()){
             String s = met.getValue();
             int lineNum = met.getKey();
-            // System.out.println(met.getKey() + " || " + met.getValue());  
             if(skipIF == false){
                 if(s.toUpperCase().contains("IF")){
                     addBlock = true;
@@ -307,20 +324,16 @@ public class NestedIfElse {
                 curlyCount--;
             }
             if(s.contains("{")){
-                //System.out.println("curlyCount++");
                 curlyCount++;
             }
             if(s.contains("}")){
-                //System.out.println("curlyCount--");
                 curlyCount--;
             }
 
             if(s.contains("(")){
-                //System.out.println("PharCount++");
                 pharCount++;
             }
             if(s.contains(")")){
-                //System.out.println("PharCount--");
                 pharCount--;
             }
             
@@ -332,11 +345,6 @@ public class NestedIfElse {
                 addBlock = false;
             }  
         }
-        System.out.println();
-        for(Map.Entry<Integer, String> get :ifBlock.entrySet()){
-            System.out.println(get.getKey() + " // " + get.getValue());
-        }
-        System.out.println("-------------------------------------------------------");
         skipIF = true;
         if(!ifBlock.isEmpty()){
             scanIF(ifBlock, skipIF);            
