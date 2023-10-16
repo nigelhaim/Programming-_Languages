@@ -72,10 +72,10 @@ public class NestedIfElse {
         //It is a flag system where it detects errors of the code and prints which error it has detected 
         if(brackets[0] == 1){
             ArrayList<Integer> flag_lineNum = scanIF(token, false);
-            String[] error = {"Case sensitivity error for 'if'", "Case sensitivity error for 'else'", 
+            String[] error = {"Case sensitvity for 'if'", "Case sensitivity for 'else'", 
             "Condition operator error", "Empty condition", "Incorrect use of logical operator", 
-            "Missing condition", "Missing bracket", "Case sensitivity error for 'else if' statement", 
-            "'else if' statement is not connected to an 'if' statement"};
+            "Missing condition", "Missing bracket", "Case sensitivity for 'else if' statement", 
+            "'else if' statement is not connected to an 'if' statement", "'else' statement is not connected to an 'if"};
             if(flag_lineNum.get(0) == 0){
                 int temp = 0;
                 int line = 0;
@@ -84,7 +84,7 @@ public class NestedIfElse {
                         temp = flag_lineNum.get(i);
                     }
                     else{
-                        line = flag_lineNum.get(i);
+                        line = flag_lineNum.get(i);                        
                         System.out.println(error[temp] + " in line " + line);
                     }
                 
@@ -113,9 +113,14 @@ public class NestedIfElse {
             int line = met.getKey();
             String temp = s.toUpperCase();
             //Checks for the conditions 
+            if(temp.contains("{") && !((temp.contains("IF(") || temp.contains("ELSE{") || temp.contains("ELSE IF(")) || (temp.contains("IF (") || temp.contains("ELSE {") || temp.contains("ELSE IF (")))){
+                System.out.print("Case sensitivity error on line " + line);
+                System.exit(0);
+            }
             String[] comparisonOperator = {"<", "<=", "==", "!=", ">", ">="};
             if(temp.contains("IF") && temp.contains("ELSE")){
-                String else_if = s.substring(s.indexOf("e"),s.indexOf("i"));
+                String charI = s.contains("i") ? "i" : "I";
+                String else_if = s.substring(s.indexOf("e"), s.indexOf(charI));
                 if(s.contains("if") && s.contains("else") && else_if.contains(" ")){
                     try {
                         if(s.contains("}")){
@@ -132,7 +137,14 @@ public class NestedIfElse {
                             flag_lineNum.addAll(lineNum);
                             return flag_lineNum;
                         }
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                        flag = 0;
+                        lineNum.add(8);
+                        lineNum.add(line);
+                        flag_lineNum.add(0, flag);
+                        flag_lineNum.addAll(lineNum);
+                        return flag_lineNum;
+                    }
                 }
                 else{
                     flag = 0;
@@ -241,8 +253,32 @@ public class NestedIfElse {
                 }
             }
             if(temp.contains("ELSE")){
-                if(s.contains("else"))
-                    flag = 1;
+                if(s.contains("else")){
+                    try {
+                        flag = 1;
+                        if(s.contains("}")){
+                            flag = 1;
+                        }
+                        else if (ifBlock.get(line - 1).contains("}")){
+                            flag = 1;
+                        }
+                        else{
+                            flag = 0;
+                            lineNum.add(9);
+                            lineNum.add(line);
+                            flag_lineNum.add(0, flag);
+                            flag_lineNum.addAll(lineNum);
+                            return flag_lineNum;
+                        }
+                    } catch (Exception e) {
+                        flag = 0;
+                        lineNum.add(10);
+                        lineNum.add(line);
+                        flag_lineNum.add(0, flag);
+                        flag_lineNum.addAll(lineNum);
+                        return flag_lineNum;
+                    }
+                }
                 else{
                     flag = 0;
                     lineNum.add(1);
