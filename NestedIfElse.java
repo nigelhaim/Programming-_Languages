@@ -77,7 +77,8 @@ public class NestedIfElse {
             ArrayList<Integer> flag_lineNum = scanIF(token, false);
             String[] error = {"Spelling error for 'if'", "Spelling error for 'else'", 
             "Condition operator error", "Empty condition", "Incorrect use of logical operator", 
-            "Missing condition", "Missing bracket"};
+            "Missing condition", "Missing bracket", "Spelling error for 'else if' statement", 
+            "'else if' statement is not connected to an 'if' statement"};
             if(flag_lineNum.get(0) == 0){
                 int temp = 0;
                 int line = 0;
@@ -125,6 +126,35 @@ public class NestedIfElse {
             int line = met.getKey();
             String temp = s.toUpperCase();
             String[] comparisonOperator = {"<", "<=", "==", "!=", ">", ">="};
+            if(temp.contains("IF") && temp.contains("ELSE")){
+                String else_if = s.substring(s.indexOf("else"),s.indexOf("if"));
+                if(s.contains("if") && s.contains("else") && else_if.contains(" ")){
+                    try {
+                        if(s.contains("}")){
+                            flag = 1;
+                        }
+                        else if (ifBlock.get(line - 1).contains("}")){
+                            flag = 1;
+                        }
+                        else{
+                            flag = 0;
+                            lineNum.add(8);
+                            lineNum.add(line);
+                            flag_lineNum.add(0, flag);
+                            flag_lineNum.addAll(lineNum);
+                            return flag_lineNum;
+                        }
+                    } catch (NullPointerException e) {}
+                }
+                else{
+                    flag = 0;
+                    lineNum.add(7);
+                    lineNum.add(line);
+                    flag_lineNum.add(0, flag);
+                    flag_lineNum.addAll(lineNum);
+                    return flag_lineNum;
+                }
+            }
             if(temp.contains("IF")){
                 if(s.contains("if")){
                     flag = 1;
@@ -250,7 +280,7 @@ public class NestedIfElse {
             if(inp.contains("}")){
                 curlyCount--;
                 int close = inp.indexOf("}");
-                while (true) {
+                while (true) {                                                                                                                                                                                                                                            
                     inp = inp.substring(close + 1);
                     if(inp.contains("}")){
                         curlyCount--;
@@ -344,5 +374,3 @@ public class NestedIfElse {
         return flag_lineNum;
     }
 }
-
-
