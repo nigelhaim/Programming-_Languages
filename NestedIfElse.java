@@ -75,10 +75,10 @@ public class NestedIfElse {
         int[] brackets = correctBrackets(token);
         if(brackets[0] == 1){
             ArrayList<Integer> flag_lineNum = scanIF(token, false);
-            String[] error = {"Spelling error for 'if'", "Spelling error for 'else'", 
+            String[] error = {"Case sensitivity error for 'if'", "Case sensitivity error for 'else'", 
             "Condition operator error", "Empty condition", "Incorrect use of logical operator", 
             "Missing condition", "Missing bracket", "Spelling error for 'else if' statement", 
-            "'else if' statement is not connected to an 'if' statement"};
+            "'else if' statement is not connected to an 'if' statement", "'else' statment is not connected to an if"};
             if(flag_lineNum.get(0) == 0){
                 int temp = 0;
                 int line = 0;
@@ -127,7 +127,8 @@ public class NestedIfElse {
             String temp = s.toUpperCase();
             String[] comparisonOperator = {"<", "<=", "==", "!=", ">", ">="};
             if(temp.contains("IF") && temp.contains("ELSE")){
-                String else_if = s.substring(s.indexOf("else"),s.indexOf("if"));
+                String charI = s.contains("i") ? "i" : "I";
+                String else_if = s.substring(s.indexOf("e"), s.indexOf(charI));
                 if(s.contains("if") && s.contains("else") && else_if.contains(" ")){
                     try {
                         if(s.contains("}")){
@@ -144,7 +145,7 @@ public class NestedIfElse {
                             flag_lineNum.addAll(lineNum);
                             return flag_lineNum;
                         }
-                    } catch (NullPointerException e) {}
+                    } catch (Exception e) {}
                 }
                 else{
                     flag = 0;
@@ -253,8 +254,25 @@ public class NestedIfElse {
                 }
             }
             if(temp.contains("ELSE")){
-                if(s.contains("else"))
-                    flag = 1;
+                if(s.contains("else")){
+                    try {
+                        flag = 1;
+                        if(s.contains("}")){
+                            flag = 1;
+                        }
+                        else if (ifBlock.get(line - 1).contains("}")){
+                            flag = 1;
+                        }
+                        else{
+                            flag = 0;
+                            lineNum.add(9);
+                            lineNum.add(line);
+                            flag_lineNum.add(0, flag);
+                            flag_lineNum.addAll(lineNum);
+                            return flag_lineNum;
+                        }
+                    } catch (Exception e) {}
+                }
                 else{
                     flag = 0;
                     lineNum.add(1);
