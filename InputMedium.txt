@@ -1,9 +1,12 @@
 int x = 1;
-if(x+1 == 2){
+if(x + 1 == 2){
     System.out.print("True");
-    else if(x+1==4){
+     if(x + 1 > 2){
         System.out.print("False");
-        if(x+3==4){
+    }
+    ElsE if(x + 1 == 2){
+        System.out.print("False");
+        if(x + 3 >= 4){
             System.out.print("True);
         }
     }
