@@ -58,8 +58,6 @@ public class NestedIfElse {
        
         System.out.println("===============");
         System.out.println("\nPrinting tokens");
-        //System.out.println("Token list: " + tokens);
-        //System.out.println("Token list: " + tokens);
         System.out.println();
         System.out.println("===============");
         System.out.println("Count");
@@ -67,11 +65,7 @@ public class NestedIfElse {
         System.out.println("Number of else statements: " + elseCount);
         System.out.println("===============");
         System.out.println();
-        //int lineNumber = 0;
-        // for(String t : tokens){
-        //     System.out.println(lineNumber + " | " + t);
-        //     lineNumber++;
-        // }
+        
         int[] brackets = correctBrackets(token);
         if(brackets[0] == 1){
             ArrayList<Integer> flag_lineNum = scanIF(token, false);
@@ -111,16 +105,6 @@ public class NestedIfElse {
         ArrayList<Integer> flag_lineNum = new ArrayList<>();
         int flag = 1;
 
-        // int[] if_block = get_if_block(ifBlock);
-        // if(if_block[0] == 0){
-        //     flag = if_block[0];
-        //     lineNum.add(6);
-        //     lineNum.add(if_block[1]);
-        //     flag_lineNum.add(0, flag);
-        //     flag_lineNum.addAll(lineNum);
-        //     return flag_lineNum;
-        // }
-
         for(Map.Entry<Integer, String> met: ifBlock.entrySet()){
             String s = met.getValue();
             int line = met.getKey();
@@ -145,7 +129,14 @@ public class NestedIfElse {
                             flag_lineNum.addAll(lineNum);
                             return flag_lineNum;
                         }
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                        flag = 0;
+                        lineNum.add(8);
+                        lineNum.add(line);
+                        flag_lineNum.add(0, flag);
+                        flag_lineNum.addAll(lineNum);
+                        return flag_lineNum;
+                    }
                 }
                 else{
                     flag = 0;
@@ -271,7 +262,14 @@ public class NestedIfElse {
                             flag_lineNum.addAll(lineNum);
                             return flag_lineNum;
                         }
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                        flag = 0;
+                        lineNum.add(9);
+                        lineNum.add(line);
+                        flag_lineNum.add(0, flag);
+                        flag_lineNum.addAll(lineNum);
+                        return flag_lineNum;
+                    }
                 }
                 else{
                     flag = 0;
