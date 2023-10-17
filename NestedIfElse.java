@@ -19,25 +19,21 @@ public class NestedIfElse {
             System.out.println("Importing code");
             int curlyCount = 0;
             int pharCount = 0; 
-            int LineCount = 0;
+            int LineCount = 1;
             String inp;
+            //Counts the brackets if successfuly opened and closed 
             while ((inp=br.readLine())!=null) {
-                //System.out.println("Inserting " + inp);
                 if(inp.contains("{")){
-                    //System.out.println("curlyCount++");
                     curlyCount++;
                 }
                 if(inp.contains("}")){
-                    //System.out.println("curlyCount--");
                     curlyCount--;
                 }
 
                 if(inp.contains("(")){
-                    //System.out.println("PharCount++");
                     pharCount++;
                 }
                 if(inp.contains(")")){
-                    //System.out.println("PharCount--");
                     pharCount--;
                 }
                 if(inp.toUpperCase().contains("IF")){
@@ -45,8 +41,6 @@ public class NestedIfElse {
                 }else if(inp.toUpperCase().contains("ELSE")){
                     elseCount++;
                 }
-                //System.out.println("Curly braces count: " + curlyCount + "\nPharanthesis Count: " + pharCount); 
-                //tokens.add(inp);
                 if(!inp.equals("")){
                     token.put(LineCount,inp);
                     LineCount++;
@@ -60,19 +54,28 @@ public class NestedIfElse {
         System.out.println("\nPrinting tokens");
         System.out.println();
         System.out.println("===============");
+        System.out.println();
+        for(Map.Entry<Integer, String> get :token.entrySet()){
+            if(get.getKey() > 9){
+                System.out.println(get.getKey() + " | " + get.getValue());
+            }else{
+                System.out.println(get.getKey() + "  | " + get.getValue());
+            }
+        }
+        System.out.println("-------------------------------------------------------");
         System.out.println("Count");
         System.out.println("Number of if statements: " + ifCount);
         System.out.println("Number of else statements: " + elseCount);
         System.out.println("===============");
         System.out.println();
-        
         int[] brackets = correctBrackets(token);
+        //It is a flag system where it detects errors of the code and prints which error it has detected 
         if(brackets[0] == 1){
             ArrayList<Integer> flag_lineNum = scanIF(token, false);
-            String[] error = {"Case sensitivity error for 'if'", "Case sensitivity error for 'else'", 
+            String[] error = {"Case sensitvity for 'if'", "Case sensitivity for 'else'", 
             "Condition operator error", "Empty condition", "Incorrect use of logical operator", 
-            "Missing condition", "Missing bracket", "Spelling error for 'else if' statement", 
-            "'else if' statement is not connected to an 'if' statement", "'else' statment is not connected to an if"};
+            "Missing condition", "Missing bracket", "Case sensitivity for 'else if' statement", 
+            "Missing if statement", "Missing if statment"};
             if(flag_lineNum.get(0) == 0){
                 int temp = 0;
                 int line = 0;
@@ -81,7 +84,7 @@ public class NestedIfElse {
                         temp = flag_lineNum.get(i);
                     }
                     else{
-                        line = flag_lineNum.get(i);
+                        line = flag_lineNum.get(i);                        
                         System.out.println(error[temp] + " in line " + line);
                     }
                 
@@ -109,7 +112,12 @@ public class NestedIfElse {
             String s = met.getValue();
             int line = met.getKey();
             String temp = s.toUpperCase();
-            String[] comparisonOperator = {"<", "<=", "==", "!=", ">", ">="};
+            //Checks for the conditions 
+            if(temp.contains("{") && !((temp.contains("IF(") || temp.contains("ELSE{") || temp.contains("ELSE IF(")) || (temp.contains("IF (") || temp.contains("ELSE {") || temp.contains("ELSE IF (")))){
+                System.out.print("Invalid keyword on line " + line);
+                System.exit(0);
+            }
+            String[] comparisonOperator = {"<=", "==", "!=", ">=", "<", ">"};
             if(temp.contains("IF") && temp.contains("ELSE")){
                 String charI = s.contains("i") ? "i" : "I";
                 String else_if = s.substring(s.indexOf("e"), s.indexOf(charI));
@@ -208,8 +216,14 @@ public class NestedIfElse {
                 if(conditions.size() < 1){
                     for(int i = 0; i < comparisonOperator.length; i++){
                         if(condition.contains(comparisonOperator[i])){
-                            flag = 1;
-                            break;
+                            if(s.contains(" " + comparisonOperator[i] + " ")){
+                                flag = 1;
+                                break;
+                            }
+                            else{
+                                System.out.print("Invalid operator on line " + line);
+                                System.exit(0);
+                            }
                         }
                         else{
                             flag = 0;
@@ -264,7 +278,7 @@ public class NestedIfElse {
                         }
                     } catch (Exception e) {
                         flag = 0;
-                        lineNum.add(9);
+                        lineNum.add(10);
                         lineNum.add(line);
                         flag_lineNum.add(0, flag);
                         flag_lineNum.addAll(lineNum);
@@ -287,6 +301,7 @@ public class NestedIfElse {
     }
 
     public static int[] correctBrackets(HashMap<Integer, String> token){
+        //Recounts the brackets 
         int flag = 1;
         int[] ret = new int[2];
         int curlyCount = 0;
@@ -341,7 +356,7 @@ public class NestedIfElse {
         for(Map.Entry<Integer, String> met: token.entrySet()){
             String s = met.getValue();
             int lineNum = met.getKey();
-            // System.out.println(met.getKey() + " || " + met.getValue());  
+            String temp = s.toUpperCase();
             if(skipIF == false){
                 if(s.toUpperCase().contains("IF")){
                     addBlock = true;
@@ -352,20 +367,16 @@ public class NestedIfElse {
                 curlyCount--;
             }
             if(s.contains("{")){
-                //System.out.println("curlyCount++");
                 curlyCount++;
             }
             if(s.contains("}")){
-                //System.out.println("curlyCount--");
                 curlyCount--;
             }
 
             if(s.contains("(")){
-                //System.out.println("PharCount++");
                 pharCount++;
             }
             if(s.contains(")")){
-                //System.out.println("PharCount--");
                 pharCount--;
             }
             
@@ -376,12 +387,33 @@ public class NestedIfElse {
             if(curlyCount == 0 && pharCount == 0){
                 addBlock = false;
             }  
+            if(temp.contains("{") && temp.contains("IF(")){
+                char [] chars = temp.toCharArray();
+                for(int i = 0; i < chars.length; i++){
+                    if(i-1 >= 0 && chars[i] == 'I' && chars[i+1] == 'F' && chars[i+2] == '(' && (chars[i-1] != ' ' || String.valueOf(chars[i-1]).equals(""))){
+                        System.out.print("Invalid Keyword on line " + met.getKey());
+                        System.exit(0);
+                    }
+                }
+            }
+            if(temp.contains("{") && temp.contains("ELSE")){
+                char [] chars = temp.toCharArray();
+                for(int i = 0; i < chars.length; i++){
+                        if((i-1 >= 0 && chars[i] == 'E' && chars[i+1] == 'L' && chars[i+2] == 'S' && chars[i+3] == 'E' && !((String.valueOf(chars[i+4]).equals(" ")) || chars[i+4] == '{'))){
+                            System.out.print("Invalid Keyword on line " + met.getKey());
+                            System.exit(0);
+                        }
+                    if(i-1 >= 0 && chars[i] == 'E' && chars[i+1] == 'L' && chars[i+2] == 'S' && chars[i+3] == 'E' && (chars[i-1] != ' ' || String.valueOf(chars[i-1]).equals("")) && chars[i-1] != '}'){
+                        System.out.print("Invalid Keyword on line " + met.getKey());
+                        System.exit(0);
+                    }
+                }
+            }
+            if(temp.contains("{") && !((temp.contains("IF(") || temp.contains("ELSE{") || temp.contains("ELSE IF(")) || (temp.contains("IF (") || temp.contains("ELSE {") || temp.contains("ELSE IF (")))){
+                System.out.print("Invalid Keyword on line " + met.getKey());
+                System.exit(0);
+            }
         }
-        System.out.println();
-        for(Map.Entry<Integer, String> get :ifBlock.entrySet()){
-            System.out.println(get.getKey() + " // " + get.getValue());
-        }
-        System.out.println("-------------------------------------------------------");
         skipIF = true;
         if(!ifBlock.isEmpty()){
             scanIF(ifBlock, skipIF);            
