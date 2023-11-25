@@ -315,9 +315,10 @@ public class NestedIfElse {
         //Recounts the brackets 
         int flag = 1;
         int curlyCount = 0;
+        int parentheses = 0;
         for(Map.Entry<Integer, String> set: token.entrySet()){
             String inp = set.getValue();
-
+            String temp = set.getValue();
             if(inp.contains("}")){
                 curlyCount--;
                 int close = inp.indexOf("}");
@@ -344,9 +345,34 @@ public class NestedIfElse {
                         break;
                 }
             }
+            if(temp.contains("(")){
+                parentheses++;
+                int open = temp.indexOf("(");
+                while(open > 0){
+                    temp = temp.substring(open + 1);
+                    if(temp.contains("(")){
+                        parentheses++;
+                        open = temp.indexOf("(");
+                    }
+                    else
+                        break;
+                }
+            }
+            if(temp.contains(")")){
+                parentheses--;
+                int close = temp.indexOf(")");
+                while (close > 0) {                                                                                                                                                                                                                                            
+                    temp = temp.substring(close + 1);
+                    if(temp.contains(")")){
+                        parentheses--;
+                        close = temp.indexOf(")");
+                    }
+                    else
+                        break;
+                }
+            }
         }
-        
-        if(curlyCount != 0){
+        if(curlyCount != 0 || parentheses != 0){
             flag = 0;
         }
         return flag;
